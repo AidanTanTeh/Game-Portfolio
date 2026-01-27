@@ -3,8 +3,9 @@ class Resources {
         // Everything we plan to download
         this.toLoad = {
             hero: "./sprites/hero-sheet.png",
-            ground: "./sprites/ground.png",
-            sky: "./sprites/sky.png"
+            ground: "./sprites/ground4.png",
+            sky: "./sprites/sky.png",
+            shadow: "./sprites/shadow.png"
         }
 
         // Bucket to keep all images
