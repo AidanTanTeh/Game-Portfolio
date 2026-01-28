@@ -7,6 +7,7 @@ import { Input } from './src/Input';
 import { gridCells } from './src/helpers.js/grid';
 import { GameObject } from './src/GameObject';
 import { Hero } from './src/objects/Hero/Hero';
+import { events } from './src/Events';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -18,6 +19,9 @@ const mainScene = new GameObject({
     position: new Vector2(0, 0)
 })
 
+events.on("HERO_POSITION", mainScene, heroPosition => {
+    console.log("HERO MOVED", heroPosition)
+})
 
 // Build up the scene: add sky
 const skySprite = new Sprite({
