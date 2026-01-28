@@ -1,1 +1,2 @@
 hero sheet: arranged in 32 x 32 for each frame
+each tile is 16 * 16 
