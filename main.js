@@ -8,6 +8,7 @@ import { gridCells } from './src/helpers.js/grid';
 import { GameObject } from './src/GameObject';
 import { Hero } from './src/objects/Hero/Hero';
 import { events } from './src/Events';
+import { Camera } from './src/Camera';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -19,16 +20,12 @@ const mainScene = new GameObject({
     position: new Vector2(0, 0)
 })
 
-events.on("HERO_POSITION", mainScene, heroPosition => {
-    console.log("HERO MOVED", heroPosition)
-})
 
 // Build up the scene: add sky
 const skySprite = new Sprite({
         resource: resources.images.sky,
         frameSize: new Vector2(320, 180)
 })
-mainScene.addChild(skySprite);
 
 
 // Add ground
@@ -44,6 +41,11 @@ const hero = new Hero(gridCells(6), gridCells(5));
 mainScene.addChild(hero);
 
 
+// Add camera
+const camera = new Camera();
+mainScene.addChild(camera);
+
+
 // Add an Input class to the main scene
 mainScene.input = new Input();
 
@@ -54,7 +56,21 @@ const update = (delta) => {
 };
 
 const draw = () => {
+    // Clear anything stale
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    skySprite.draw(ctx, 0, 0);
+    // Svae the current state (for camera offset)
+    ctx.save();
+
+    // Offset by camera position
+    ctx.translate(camera.position.x, camera.position.y);
+    
+    // Draw objects in the mounted scene
     mainScene.draw(ctx, 0, 0);
+
+    // Restore to original state
+    ctx.restore();
 }
 
 
