@@ -1,2 +1,11 @@
-hero sheet: arranged in 32 x 32 for each frame
-each tile is 16 * 16 
+
+ground4.png notes:
+    - tileHeight = 180
+    - walkable surface pixel row ≈ 125 from top (transparent above)
+
+hero-sheet.png notes:
+    - frameSize = 32x32
+    - feet pixel row ≈ 32 from top (anchor is feet)
+
+tiling:
+    - each tile is 16 * 16 

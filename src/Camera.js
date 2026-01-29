@@ -17,11 +17,9 @@ export class Camera extends GameObject {
 
             this.position = new Vector2(
                 -heroPosition.x + halfWidth,
-                -heroPosition.y + halfHeight,
-            ) 
-            
-            console.log("HERO MOVED", heroPosition);
-            this.position = heroPosition.duplicate();
+                0 // y set to zero to prevent camera moving when hero jumps
+                // -heroPosition.y + halfHeight,
+            )
         })
     }
 }

@@ -4,16 +4,18 @@ import { Sprite } from './src/Sprite';
 import { Vector2 } from './src/Vector2';
 import { GameLoop } from './src/Gameloop';
 import { Input } from './src/Input';
-import { gridCells } from './src/helpers.js/grid';
+import { gridCells } from './src/helpers/grid';
 import { GameObject } from './src/GameObject';
 import { Hero } from './src/objects/Hero/Hero';
 import { events } from './src/Events';
 import { Camera } from './src/Camera';
+import { Ground } from './src/objects/Ground/Ground';
+import { FLOOR_Y } from './src/world/worldConstants';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
 const ctx = canvas.getContext("2d");
-
+ctx.imageSmoothingEnabled = false;
 
 // Establish the root scene
 const mainScene = new GameObject({
@@ -29,15 +31,18 @@ const skySprite = new Sprite({
 
 
 // Add ground
-const groundSprite = new Sprite({
-        resource: resources.images.ground,
-        frameSize: new Vector2(320, 180)
-})
-mainScene.addChild(groundSprite);
+// const groundSprite = new Sprite({
+//         resource: resources.images.ground,
+//         frameSize: new Vector2(320, 180)
+// })
+// mainScene.addChild(groundSprite);
+
+const ground = new Ground();
+mainScene.addChild(ground);
 
 
 // Add player
-const hero = new Hero(gridCells(6), gridCells(5));
+const hero = new Hero(gridCells(6), FLOOR_Y);
 mainScene.addChild(hero);
 
 
@@ -68,6 +73,12 @@ const draw = () => {
     
     // Draw objects in the mounted scene
     mainScene.draw(ctx, 0, 0);
+
+    // DEBUG: draw floor line ON TOP of everything
+    // DEBUG: pixel-perfect floor line
+    // ctx.fillStyle = "lime";
+    // ctx.fillRect(-10000, FLOOR_Y, 20000, 1);
+
 
     // Restore to original state
     ctx.restore();

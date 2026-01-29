@@ -16,12 +16,12 @@ export class Input {
             if (e.code === "ArrowRight" || e.code === "KeyD") {
                 this.onArrowPressed(RIGHT);
             }
-            if (e.code === "ArrowUp" || e.code === "KeyW") {
-                this.onArrowPressed(UP);
-            }
-            if (e.code === "ArrowDown" || e.code === "KeyS") {
-                this.onArrowPressed(DOWN);
-            }
+            // if (e.code === "ArrowUp" || e.code === "KeyW") {
+            //     this.onArrowPressed(UP);
+            // }
+            // if (e.code === "ArrowDown" || e.code === "KeyS") {
+            //     this.onArrowPressed(DOWN);
+            // }
         })
 
         document.addEventListener("keyup", (e) => {
@@ -32,12 +32,12 @@ export class Input {
             if (e.code === "ArrowRight" || e.code === "KeyD") {
                 this.onArrowReleased(RIGHT);
             }
-            if (e.code === "ArrowUp" || e.code === "KeyW") {
-                this.onArrowReleased(UP);
-            }
-            if (e.code === "ArrowDown" || e.code === "KeyS") {
-                this.onArrowReleased(DOWN);
-            }
+            // if (e.code === "ArrowUp" || e.code === "KeyW") {
+            //     this.onArrowReleased(UP);
+            // }
+            // if (e.code === "ArrowDown" || e.code === "KeyS") {
+            //     this.onArrowReleased(DOWN);
+            // }
         })
     }
 

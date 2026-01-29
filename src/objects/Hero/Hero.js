@@ -2,16 +2,17 @@ import { GameObject } from "../../GameObject";
 import { Vector2 } from "../../Vector2";
 import { Sprite } from "../../Sprite";
 import { resources } from "../../Resource";
-import { gridCells } from "../../helpers.js/grid";
+import { gridCells } from "../../helpers/grid";
 import { Animations } from "../../Animations";
 import { FrameIndexPattern } from "../../FrameIndexPattern";
 import { WALK_DOWN, WALK_UP, WALK_LEFT, WALK_RIGHT,
          STAND_DOWN, STAND_UP, STAND_LEFT, STAND_RIGHT } from "./heroAnimations";
 import { DOWN, UP, LEFT, RIGHT } from "../../Input";
-import { moveTowards } from "../../helpers.js/moveTowards";
-import { isSpaceFree } from "../../helpers.js/grid";
+import { moveTowards } from "../../helpers/moveTowards";
+import { isSpaceFree } from "../../helpers/grid";
 import { walls } from "../../levels/level1";
 import { events } from "../../Events";
+import { DEBUG } from "../../debug";
 
 export class Hero extends GameObject {
     constructor(x, y) {
@@ -19,20 +20,13 @@ export class Hero extends GameObject {
             position: new Vector2(x, y)
         });
 
-        // const shadow = new Sprite({
-        //     resource: resources.images.shadow,
-        //     frameSize: new Vector2(32, 32),
-        //     position: new Vector2(-30, 15), 
-        // });
-        // this.addChild(shadow);
-
         this.body = new Sprite({
             resource: resources.images.hero,
             frameSize: new Vector2(32, 32),
             hFrames: 3,
             vFrames: 8,
             frame: 1,
-            position: new Vector2(-30, 15),
+            position: new Vector2(-16, -29),
             animations: new Animations({
                 walkDown: new FrameIndexPattern(WALK_DOWN),
                 walkUp: new FrameIndexPattern(WALK_UP),
@@ -108,6 +102,26 @@ export class Hero extends GameObject {
         if (isSpaceFree(walls, nextX, nextY)) {
             this.destinationPosition.x = nextX;
             this.destinationPosition.y = nextY;
+        }
+    }
+
+    drawImage(ctx, x, y) {
+        // FOR DEBUGGING:
+        if (DEBUG) {
+            // Hero anchor point (should be at hero's feet)
+            ctx.fillStyle = "red";
+            ctx.fillRect(x - 1, y - 1, 3, 3);
+
+            // Show where the 32x32 sprite box is drawn
+            // body.position is relative to anchor
+            const bx = x + this.body.position.x;
+            const by = y + this.body.position.y;
+            ctx.strokeStyle = "yellow";
+            ctx.strokeRect(bx, by, 32, 32);
+
+            // Show bottom of sprite box
+            ctx.fillStyle = "orange";
+            ctx.fillRect(bx, by + 32, 32, 1);
         }
     }
 }

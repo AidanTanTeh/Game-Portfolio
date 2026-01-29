@@ -6,6 +6,10 @@ html, body {
 }
 
 canvas {
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    display: block;
     background: blue;
 }
