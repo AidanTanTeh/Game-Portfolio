@@ -8,17 +8,19 @@ import { FrameIndexPattern } from "../../FrameIndexPattern";
 import { WALK_DOWN, WALK_UP, WALK_LEFT, WALK_RIGHT,
          STAND_DOWN, STAND_UP, STAND_LEFT, STAND_RIGHT } from "./heroAnimations";
 import { DOWN, UP, LEFT, RIGHT } from "../../Input";
-import { moveTowards } from "../../helpers/moveTowards";
 import { isSpaceFree } from "../../helpers/grid";
 import { walls } from "../../levels/level1";
 import { events } from "../../Events";
 import { DEBUG } from "../../debug";
+import { WORLD_MAX_X, WORLD_MIN_X } from "../../world/worldConstants";
 
 export class Hero extends GameObject {
     constructor(x, y) {
         super({
             position: new Vector2(x, y)
         });
+
+        this.moveSpeed = 80;
 
         this.body = new Sprite({
             resource: resources.images.hero,
@@ -38,18 +40,63 @@ export class Hero extends GameObject {
                 standRight: new FrameIndexPattern(STAND_RIGHT),
             })
         });
-        this.addChild(this.body);
 
+        this.addChild(this.body);
         this.facingDirection = DOWN;
-        this.destinationPosition = this.position.duplicate();
     }
 
     step(delta, root) {
-        const distance = moveTowards(this, this.destinationPosition, 1)
-        const hasArrived = distance <= 1;
-        // Attempt to move again if the hero is at his position
-        if (hasArrived) {
-            this.tryMove(root);
+        const { input } = root;
+
+        // Convert delta to seconds
+        const dt = delta / 1000;
+
+        // Direction intent
+        let dx = 0;
+        let dy = 0;
+
+        if (input.direction === LEFT) dx = -1;
+        else if (input.direction === RIGHT) dx = 1;
+
+        if (input.direction === UP) dy = -1;
+        else if (input.direction === DOWN) dy = 1;
+
+        // Animations + facing
+        if (!input.direction) {
+            if (this.facingDirection === LEFT) this.body.animations.play("standLeft");
+            if (this.facingDirection === RIGHT) this.body.animations.play("standRight");
+            if (this.facingDirection === UP) this.body.animations.play("standUp");
+            if (this.facingDirection === DOWN) this.body.animations.play("standDown");
+        } else {
+            if (input.direction === LEFT) this.body.animations.play("walkLeft");
+            if (input.direction === RIGHT) this.body.animations.play("walkRight");
+            if (input.direction === UP) this.body.animations.play("walkUp");
+            if (input.direction === DOWN) this.body.animations.play("walkDown");
+
+            this.facingDirection = input.direction ?? DOWN; // To stay at direction of last pressed key
+            // this.facingDirection = DOWN;
+        }
+
+        // If no movement, just emit position  (if changed) and exit        const distance = moveTowards(this, this.destinationPosition, 1)
+        if (dx === 0 && dy === 0) {
+            this.tryEmitPosition();
+            return;
+        }
+
+        // New position using speed
+        const amount = this.moveSpeed * dt;
+        let nextX = this.position.x + dx * amount;
+        let nextY = this.position.y + dy * amount;
+
+        // Hero movement clamp
+        nextX = Math.max(WORLD_MIN_X, Math.min(WORLD_MAX_X, nextX));
+
+        // Check if can move
+        const canMove = isSpaceFree(walls, nextX, nextY);
+
+        if (canMove) {
+            this.position.x = nextX;
+            this.position.y = nextY;
         }
 
         this.tryEmitPosition() 
@@ -62,47 +109,6 @@ export class Hero extends GameObject {
         this.lastX = this.position.x;
         this.lastY = this.position.y;
         events.emit("HERO_POSITION", this.position);
-    }
-
-    tryMove(root) {
-        const {input} = root
-    
-        if (!input.direction) {
-            if (this.facingDirection === LEFT) {this.body.animations.play("standLeft")}
-            if (this.facingDirection === RIGHT) {this.body.animations.play("standRight")}
-            if (this.facingDirection === UP) {this.body.animations.play("standUp")}
-            if (this.facingDirection === DOWN) {this.body.animations.play("standDown")}
-        
-            return;
-        }
-    
-        let nextX = this.destinationPosition.x;
-        let nextY = this.destinationPosition.y;
-        const gridSize = 16; // change for snappier movement
-    
-        if (input.direction === LEFT) {
-            nextX -= gridSize;
-            this.body.animations.play("walkLeft");
-        }
-        if (input.direction === RIGHT) {
-            nextX += gridSize;
-            this.body.animations.play("walkRight");
-        }
-        if (input.direction === UP) {
-            nextY -= gridSize;
-            this.body.animations.play("walkUp");
-        }
-        if (input.direction === DOWN) {
-            nextY += gridSize;
-            this.body.animations.play("walkDown");
-        }
-        this.facingDirection = input.direction ?? DOWN; // To stay at direction of last pressed key
-        // this.facingDirection = DOWN;
-    
-        if (isSpaceFree(walls, nextX, nextY)) {
-            this.destinationPosition.x = nextX;
-            this.destinationPosition.y = nextY;
-        }
     }
 
     drawImage(ctx, x, y) {

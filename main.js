@@ -11,6 +11,7 @@ import { events } from './src/Events';
 import { Camera } from './src/Camera';
 import { Ground } from './src/objects/Ground/Ground';
 import { FLOOR_Y } from './src/world/worldConstants';
+import { DEBUG } from './src/debug';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -29,13 +30,6 @@ const skySprite = new Sprite({
         frameSize: new Vector2(320, 180)
 })
 
-
-// Add ground
-// const groundSprite = new Sprite({
-//         resource: resources.images.ground,
-//         frameSize: new Vector2(320, 180)
-// })
-// mainScene.addChild(groundSprite);
 
 const ground = new Ground();
 mainScene.addChild(ground);
@@ -74,11 +68,11 @@ const draw = () => {
     // Draw objects in the mounted scene
     mainScene.draw(ctx, 0, 0);
 
-    // DEBUG: draw floor line ON TOP of everything
-    // DEBUG: pixel-perfect floor line
-    // ctx.fillStyle = "lime";
-    // ctx.fillRect(-10000, FLOOR_Y, 20000, 1);
-
+    // FOR DEBUGGING: floor line
+    if (DEBUG) {
+        ctx.fillStyle = "lime";
+        ctx.fillRect(-10000, FLOOR_Y, 20000, 1);
+    }
 
     // Restore to original state
     ctx.restore();

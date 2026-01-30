@@ -16,10 +16,10 @@ export class Camera extends GameObject {
             const halfHeight = -personHalf + canvasHeight / 2;
 
             this.position = new Vector2(
-                -heroPosition.x + halfWidth,
+                Math.round(-heroPosition.x + halfWidth),
                 0 // y set to zero to prevent camera moving when hero jumps
                 // -heroPosition.y + halfHeight,
-            )
+            );
         })
     }
 }

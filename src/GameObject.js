@@ -22,8 +22,8 @@ export class GameObject {
 
     // Draw entry
     draw(ctx, x, y) {
-        const drawPosX = x + this.position.x;
-        const drawPosY = y + this.position.y;
+        const drawPosX = Math.round(x + this.position.x);
+        const drawPosY = Math.round(y + this.position.y);
 
         // Do the actual rendering for Images
         this.drawImage(ctx, drawPosX, drawPosY);
