@@ -51,7 +51,8 @@ mainScene.input = new Input();
 
 // Establish update and draw loops
 const update = (delta) => {
-    mainScene.stepEntry(delta, mainScene)
+    mainScene.stepEntry(delta, mainScene);
+    mainScene.input.clearFrameInputs();
 };
 
 const draw = () => {

@@ -7,6 +7,8 @@ export class Input {
     constructor () {
 
         this.heldDirections = [];
+        this.jumpPressed = false;
+        this.jumpHeld = false;
 
         document.addEventListener("keydown", (e) => {
             // Check for dedicated direction list
@@ -16,9 +18,13 @@ export class Input {
             if (e.code === "ArrowRight" || e.code === "KeyD") {
                 this.onArrowPressed(RIGHT);
             }
-            // if (e.code === "ArrowUp" || e.code === "KeyW") {
-            //     this.onArrowPressed(UP);
-            // }
+            if (e.code === "ArrowUp" || e.code === "KeyW" || e.code === "Space") {
+                e.preventDefault(); // prevents space from scrolling the page
+                if (!this.jumpHeld) {
+                    this.jumpPressed = true;
+                    this.jumpHeld = true;
+                }
+            }
             // if (e.code === "ArrowDown" || e.code === "KeyS") {
             //     this.onArrowPressed(DOWN);
             // }
@@ -32,9 +38,9 @@ export class Input {
             if (e.code === "ArrowRight" || e.code === "KeyD") {
                 this.onArrowReleased(RIGHT);
             }
-            // if (e.code === "ArrowUp" || e.code === "KeyW") {
-            //     this.onArrowReleased(UP);
-            // }
+            if (e.code === "ArrowUp" || e.code === "KeyW" || e.code === "Space") {
+                this.jumpHeld = false;
+            }
             // if (e.code === "ArrowDown" || e.code === "KeyS") {
             //     this.onArrowReleased(DOWN);
             // }
@@ -60,5 +66,9 @@ export class Input {
 
         // Remove this key from the list
         this.heldDirections.splice(index, 1);
+    }
+
+    clearFrameInputs() {
+        this.jumpPressed = false;
     }
 }

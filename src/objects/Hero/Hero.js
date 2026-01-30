@@ -2,17 +2,19 @@ import { GameObject } from "../../GameObject";
 import { Vector2 } from "../../Vector2";
 import { Sprite } from "../../Sprite";
 import { resources } from "../../Resource";
-import { gridCells } from "../../helpers/grid";
 import { Animations } from "../../Animations";
 import { FrameIndexPattern } from "../../FrameIndexPattern";
 import { WALK_DOWN, WALK_UP, WALK_LEFT, WALK_RIGHT,
          STAND_DOWN, STAND_UP, STAND_LEFT, STAND_RIGHT } from "./heroAnimations";
-import { DOWN, UP, LEFT, RIGHT } from "../../Input";
+import { DOWN, LEFT, RIGHT } from "../../Input";
 import { isSpaceFree } from "../../helpers/grid";
 import { walls } from "../../levels/level1";
 import { events } from "../../Events";
 import { DEBUG } from "../../debug";
-import { WORLD_MAX_X, WORLD_MIN_X } from "../../world/worldConstants";
+import { FLOOR_Y, WORLD_MAX_X, WORLD_MIN_X } from "../../world/worldConstants";
+
+const GRAVITY = 900;  // px/s^2
+const JUMP_VELOCITY = -320; // px/s
 
 export class Hero extends GameObject {
     constructor(x, y) {
@@ -20,7 +22,9 @@ export class Hero extends GameObject {
             position: new Vector2(x, y)
         });
 
-        this.moveSpeed = 80;
+        this.velocityX = 80;
+        this.velocityY = 0;
+        this.isGrounded = true;
 
         this.body = new Sprite({
             resource: resources.images.hero,
@@ -51,51 +55,55 @@ export class Hero extends GameObject {
         // Convert delta to seconds
         const dt = delta / 1000;
 
-        // Direction intent
+        // Horizontal direction intent
         let dx = 0;
-        let dy = 0;
-
         if (input.direction === LEFT) dx = -1;
         else if (input.direction === RIGHT) dx = 1;
 
-        if (input.direction === UP) dy = -1;
-        else if (input.direction === DOWN) dy = 1;
+        // Jump
+        if (input.jumpPressed && this.isGrounded) {
+            this.velocityY = JUMP_VELOCITY;
+            this.isGrounded = false;
+        }
+
+        // Gravity
+        this.velocityY += GRAVITY * dt;
 
         // Animations + facing
         if (!input.direction) {
             if (this.facingDirection === LEFT) this.body.animations.play("standLeft");
             if (this.facingDirection === RIGHT) this.body.animations.play("standRight");
-            if (this.facingDirection === UP) this.body.animations.play("standUp");
             if (this.facingDirection === DOWN) this.body.animations.play("standDown");
         } else {
             if (input.direction === LEFT) this.body.animations.play("walkLeft");
             if (input.direction === RIGHT) this.body.animations.play("walkRight");
-            if (input.direction === UP) this.body.animations.play("walkUp");
             if (input.direction === DOWN) this.body.animations.play("walkDown");
 
-            this.facingDirection = input.direction ?? DOWN; // To stay at direction of last pressed key
-            // this.facingDirection = DOWN;
-        }
-
-        // If no movement, just emit position  (if changed) and exit        const distance = moveTowards(this, this.destinationPosition, 1)
-        if (dx === 0 && dy === 0) {
-            this.tryEmitPosition();
-            return;
+            this.facingDirection = input.direction; // To stay at direction of last pressed key
         }
 
         // New position using speed
-        const amount = this.moveSpeed * dt;
-        let nextX = this.position.x + dx * amount;
-        let nextY = this.position.y + dy * amount;
+        let nextX = this.position.x + dx * this.velocityX * dt;
+        let nextY = this.position.y + this.velocityY * dt; // speed = vel * time
 
-        // Hero movement clamp
+        // World bounds
         nextX = Math.max(WORLD_MIN_X, Math.min(WORLD_MAX_X, nextX));
+
+        if (nextY >= FLOOR_Y) {
+            nextY = FLOOR_Y;
+            this.velocityY = 0;
+            this.isGrounded = true;
+        } else {
+            this.isGrounded = false;
+        }
 
         // Check if can move
         const canMove = isSpaceFree(walls, nextX, nextY);
 
         if (canMove) {
             this.position.x = nextX;
+            this.position.y = nextY;
+        } else {
             this.position.y = nextY;
         }
 
