@@ -5,11 +5,13 @@ import { resources } from "../../Resource";
 import { FLOOR_Y } from "../../world/worldConstants";
 import { DEBUG } from "../../debug";
 
+// Pixel row inside ground4.png that represents the walkable surface
+const walkableSurfaceY = 125;
+
 export class Ground extends GameObject {
     constructor() {
 
-        // Pixel row inside ground4.png that represents the walkable surface
-        const walkableSurfaceY = 125;
+        
 
         super({ position: new Vector2(0, FLOOR_Y - walkableSurfaceY) });
 

@@ -5,7 +5,8 @@ class Resources {
             hero: "./sprites/hero-sheet.png",
             ground: "./sprites/ground4.png",
             sky: "./sprites/sky.png",
-            shadow: "./sprites/shadow.png"
+            gunPickup: "./sprites/gunGreyPickup.png",
+            gunHeld: "./sprites/gunGreyHeld.png",
         }
 
         // Bucket to keep all images

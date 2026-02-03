@@ -7,11 +7,11 @@ import { Input } from './src/Input';
 import { gridCells } from './src/helpers/grid';
 import { GameObject } from './src/GameObject';
 import { Hero } from './src/objects/Hero/Hero';
-import { events } from './src/Events';
 import { Camera } from './src/Camera';
 import { Ground } from './src/objects/Ground/Ground';
 import { FLOOR_Y } from './src/world/worldConstants';
 import { DEBUG } from './src/debug';
+import { Gun } from './src/objects/Gun/Gun';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -31,6 +31,7 @@ const skySprite = new Sprite({
 })
 
 
+// Add ground
 const ground = new Ground();
 mainScene.addChild(ground);
 
@@ -39,6 +40,9 @@ mainScene.addChild(ground);
 const hero = new Hero(gridCells(6), FLOOR_Y);
 mainScene.addChild(hero);
 
+// Add gun
+const gun = new Gun(gridCells(9), FLOOR_Y);
+mainScene.addChild(gun);
 
 // Add camera
 const camera = new Camera();

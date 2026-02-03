@@ -9,3 +9,6 @@ hero-sheet.png notes:
 
 tiling:
     - each tile is 16 * 16 
+
+gun:
+    - frameSize = pickup: 10 x 8 held: 8 x 6

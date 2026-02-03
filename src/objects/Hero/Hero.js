@@ -5,7 +5,8 @@ import { resources } from "../../Resource";
 import { Animations } from "../../Animations";
 import { FrameIndexPattern } from "../../FrameIndexPattern";
 import { WALK_DOWN, WALK_UP, WALK_LEFT, WALK_RIGHT,
-         STAND_DOWN, STAND_UP, STAND_LEFT, STAND_RIGHT } from "./heroAnimations";
+         STAND_DOWN, STAND_UP, STAND_LEFT, STAND_RIGHT, 
+         PICK_UP_DOWN} from "./heroAnimations";
 import { DOWN, LEFT, RIGHT } from "../../Input";
 import { isSpaceFree } from "../../helpers/grid";
 import { walls } from "../../levels/level1";
@@ -42,14 +43,34 @@ export class Hero extends GameObject {
                 standUp: new FrameIndexPattern(STAND_UP),
                 standLeft: new FrameIndexPattern(STAND_LEFT),
                 standRight: new FrameIndexPattern(STAND_RIGHT),
+                pickUpDown: new FrameIndexPattern(PICK_UP_DOWN),
             })
         });
 
         this.addChild(this.body);
+
+        this.handAnchor = new GameObject({
+            position: new Vector2(6, -20)
+        });
+        this.addChild(this.handAnchor);
+
+        this.heldWeapon = null;
+
         this.facingDirection = DOWN;
+        this.itemPickupTime = 0;
+        this.itemPickupShell = null;
+
+        events.on("HERO_PICKS_UP_ITEM", this, data => {
+            this.onPickUpItem(data);
+        })
     }
 
     step(delta, root) {
+        if (this.itemPickupTime > 0) {
+            this.workOnItemPickup(delta);
+            return;
+        }
+
         const { input } = root;
 
         // Convert delta to seconds
@@ -137,5 +158,68 @@ export class Hero extends GameObject {
             ctx.fillStyle = "orange";
             ctx.fillRect(bx, by + 32, 32, 1);
         }
+    }
+
+    onPickUpItem({ type, position }) {
+        // Start the pickup animation
+        this.itemPickupTime = 800; // ms
+
+        const W = 10;
+        const H = 8;
+
+        this.itemPickupShell = new GameObject({});
+        this.itemPickupShell.addChild(
+            new Sprite({
+            resource: resources.images.gunPickup,
+            frameSize: new Vector2(W, H),
+            position: new Vector2(-3, -25)
+        }))
+
+        this.addChild(this.itemPickupShell);
+        
+        this.itemBeingPickedUp = type;
+    }
+
+    workOnItemPickup(delta) {
+        this.itemPickupTime -= delta;
+        this.body.animations.play("pickUpDown");
+
+        if (this.itemPickupTime <= 0) {
+            // Remove pickup shell from the hero
+            if (this.itemPickupShell) {
+                this.removeChild(this.itemPickupShell);
+                this.itemPickupShell = null;
+            }
+
+            // Equip the item in the hero's hand
+            if (this.itemBeingPickedUp === "gun") {
+                this.equipGun();
+            }
+
+            this.itemBeingPickedUp = null;
+        }
+    }
+
+    equipGun() {
+        // Remove old weapon if any
+        if (this.heldWeapon) {
+            this.handAnchor.removeChild(this.heldWeapon);
+            this.heldWeapon = null;
+        }
+
+        // Held gun sprite resolution
+        const W = 8;
+        const H = 6;
+
+        const gunSprite = new Sprite({
+            resource: resources.images.gunHeld,
+            frameSize: new Vector2(W, H),
+            position: new Vector2(-8, 13) // Change this to move gun in hand
+        });
+
+        this.handAnchor.addChild(gunSprite);
+        this.heldWeapon = gunSprite;
+
+        this.hasGun = true;
     }
 }
