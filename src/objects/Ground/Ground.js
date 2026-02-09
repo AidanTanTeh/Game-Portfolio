@@ -10,9 +10,6 @@ const walkableSurfaceY = 125;
 
 export class Ground extends GameObject {
     constructor() {
-
-        
-
         super({ position: new Vector2(0, FLOOR_Y - walkableSurfaceY) });
 
         // Change these depending on image used

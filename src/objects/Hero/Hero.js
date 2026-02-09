@@ -128,6 +128,7 @@ export class Hero extends GameObject {
             this.position.y = nextY;
         }
 
+        this.updateGunAim(root);
         this.tryEmitPosition() 
     }
 
@@ -214,12 +215,41 @@ export class Hero extends GameObject {
         const gunSprite = new Sprite({
             resource: resources.images.gunHeld,
             frameSize: new Vector2(W, H),
-            position: new Vector2(-8, 13) // Change this to move gun in hand
+            position: new Vector2(-8, 13), // Change this to move gun in hand
+            pivot: new Vector2(2, 3), // Pivot inside sprite
+            rotation: 0,
         });
 
         this.handAnchor.addChild(gunSprite);
         this.heldWeapon = gunSprite;
-
         this.hasGun = true;
+    }
+
+    updateGunAim(root) {
+        if (!this.hasGun || !this.heldWeapon) return;
+        if (!root.mouse) return;
+
+        const handWorld = this.handAnchor.getWorldPosition();
+
+        // Local offset of gun relative to handAnchor
+        const weaponLocal = this.heldWeapon.position;
+        const pivot = this.heldWeapon.pivot;
+
+        // World position of pivot point
+        const gunPivotX = handWorld.x + weaponLocal.x + pivot.x;
+        const gunPivotY = handWorld.y + weaponLocal.y + pivot.y;
+
+        // Wow trigo actually useful????
+        const dx = root.mouse.world.x - gunPivotX;
+        const dy = root.mouse.world.y - gunPivotY;
+
+        let angle = Math.atan2(dy, dx);
+
+        this.heldWeapon.flipX = dx < 0;
+        if (dx < 0) {
+            angle += Math.PI;
+        }
+
+        this.heldWeapon.rotation = angle;
     }
 }

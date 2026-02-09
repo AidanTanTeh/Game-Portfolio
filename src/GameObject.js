@@ -56,4 +56,18 @@ export class GameObject {
             return gameObject !== g;
         })
     }
+
+    getWorldPosition() {
+        let x = 0;
+        let y = 0;
+        let current = this;
+
+        while (current) {
+            x += current.position.x;
+            y += current.position.y;
+            current = current.parent;
+        }
+
+        return new Vector2(x, y);
+    }
 }

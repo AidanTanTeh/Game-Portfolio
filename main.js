@@ -12,6 +12,8 @@ import { Ground } from './src/objects/Ground/Ground';
 import { FLOOR_Y } from './src/world/worldConstants';
 import { DEBUG } from './src/debug';
 import { Gun } from './src/objects/Gun/Gun';
+import { Mouse } from './src/Mouse';
+import { drawReticle } from './src/ui/reticle';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -23,6 +25,9 @@ const mainScene = new GameObject({
     position: new Vector2(0, 0)
 })
 
+// Add mouse
+const mouse = new Mouse(canvas);
+mainScene.mouse = mouse;
 
 // Build up the scene: add sky
 const skySprite = new Sprite({
@@ -56,6 +61,10 @@ mainScene.input = new Input();
 // Establish update and draw loops
 const update = (delta) => {
     mainScene.stepEntry(delta, mainScene);
+
+    // Convert mouse screen coords to world coords using camera
+    mouse.updateWorld(camera);
+
     mainScene.input.clearFrameInputs();
 };
 
@@ -81,8 +90,9 @@ const draw = () => {
 
     // Restore to original state
     ctx.restore();
-}
 
+    drawReticle(ctx, mouse);
+}
 
 // Start the game!
 const gameLoop = new GameLoop(update, draw)
