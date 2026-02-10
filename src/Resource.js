@@ -7,6 +7,7 @@ class Resources {
             sky: "./sprites/sky.png",
             gunPickup: "./sprites/gunGreyPickup.png",
             gunHeld: "./sprites/gunGreyHeld.png",
+            boxSheet: "./sprites/boxsheet2.png",
         }
 
         // Bucket to keep all images

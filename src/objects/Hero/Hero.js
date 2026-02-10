@@ -268,7 +268,7 @@ export class Hero extends GameObject {
     tryShoot(root) {
         if (!this.hasGun || !this.heldWeapon) return;
         if (!root.mouse) return;
-        if (!root.mouse.isDown) return;
+        if (!root.mouse.pressed) return; // change to .isDown for full-auto shooting
         if (this.shootCooldownMs > 0) return;
 
         // Find gun pivot position in world

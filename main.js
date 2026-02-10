@@ -16,6 +16,7 @@ import { Mouse } from './src/Mouse';
 import { drawReticle } from './src/ui/reticle';
 import { Bullet } from './src/objects/Bullet/Bullet';
 import { events } from './src/Events';
+import { Box } from './src/objects/Box/Box';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -61,6 +62,9 @@ mainScene.addChild(hero);
 const gun = new Gun(gridCells(9), FLOOR_Y);
 mainScene.addChild(gun);
 
+const box = new Box(gridCells(9), FLOOR_Y - 40);
+mainScene.addChild(box);
+
 // Add camera
 const camera = new Camera();
 mainScene.addChild(camera);
@@ -78,6 +82,7 @@ const update = (delta) => {
     mouse.updateWorld(camera);
 
     mainScene.input.clearFrameInputs();
+    mouse.clearFrameInputs();
 };
 
 const draw = () => {

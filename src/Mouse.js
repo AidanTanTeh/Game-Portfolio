@@ -11,10 +11,18 @@ export class Mouse {
         this.world = new Vector2(0, 0);
 
         this.isDown = false;
+        this.pressed = false;
+        this.released = false;
 
         canvas.addEventListener("mousemove", (e) => this.onMove(e));
-        canvas.addEventListener("mousedown", () => (this.isDown = true));
-        canvas.addEventListener("mouseup", () => (this.isDown = false));
+        canvas.addEventListener("mousedown", () => {
+            this.isDown = true;
+            this.pressed = true;
+        });
+        canvas.addEventListener("mouseup", () => {
+            this.isDown = false;
+            this.released = true;
+        });
     }
 
     onMove(e) {
@@ -34,5 +42,10 @@ export class Mouse {
         // Converts screen coords into world coords
         this.world.x = this.screen.x - camera.position.x;
         this.world.y = this.screen.y - camera.position.y;
+    }
+
+    clearFrameInputs() {
+        this.pressed = false;
+        this.released = false;
     }
 }
