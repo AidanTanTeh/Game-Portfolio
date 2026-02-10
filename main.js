@@ -14,6 +14,8 @@ import { DEBUG } from './src/debug';
 import { Gun } from './src/objects/Gun/Gun';
 import { Mouse } from './src/Mouse';
 import { drawReticle } from './src/ui/reticle';
+import { Bullet } from './src/objects/Bullet/Bullet';
+import { events } from './src/Events';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -23,7 +25,17 @@ ctx.imageSmoothingEnabled = false;
 // Establish the root scene
 const mainScene = new GameObject({
     position: new Vector2(0, 0)
-})
+});
+
+events.on("SPAWN_BULLET", mainScene, ({ position, velocity }) => {
+    mainScene.addChild(
+        new Bullet({
+            position,
+            velocity,
+            lifeMs: 900,
+        })
+    )
+});
 
 // Add mouse
 const mouse = new Mouse(canvas);

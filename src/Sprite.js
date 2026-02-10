@@ -1,3 +1,4 @@
+import { DEBUG } from "./debug";
 import { GameObject } from "./GameObject";
 import { Vector2 } from "./Vector2";
 
@@ -121,9 +122,11 @@ export class Sprite extends GameObject {
             dh,
         );
 
-        // DEBUG: draw pivot point
-        ctx.fillStyle = "magenta";
-        ctx.fillRect(0, 0, 2, 2);
+        // DEBUG: draw pivot point for gun in hand
+        if (DEBUG) {
+            ctx.fillStyle = "magenta";
+            ctx.fillRect(0, 0, 2, 2);
+        }
 
         ctx.restore();
     }

@@ -60,6 +60,9 @@ export class Hero extends GameObject {
         this.itemPickupTime = 0;
         this.itemPickupShell = null;
 
+        this.shootCooldownMs = 0;
+        this.fireRateMs = 400;
+
         events.on("HERO_PICKS_UP_ITEM", this, data => {
             this.onPickUpItem(data);
         })
@@ -128,7 +131,12 @@ export class Hero extends GameObject {
             this.position.y = nextY;
         }
 
+        // Countdown for subsequent bullets
+        this.shootCooldownMs = Math.max(0, this.shootCooldownMs - delta);
+
         this.updateGunAim(root);
+        this.tryShoot(root);
+
         this.tryEmitPosition() 
     }
 
@@ -243,13 +251,70 @@ export class Hero extends GameObject {
         const dx = root.mouse.world.x - gunPivotX;
         const dy = root.mouse.world.y - gunPivotY;
 
-        let angle = Math.atan2(dy, dx);
+        // Angle that points to the mouse
+        const aimAngle = Math.atan2(dy, dx);
+        this.aimAngle = aimAngle;
 
         this.heldWeapon.flipX = dx < 0;
-        if (dx < 0) {
-            angle += Math.PI;
+
+        let renderAngle = aimAngle;
+        if (this.heldWeapon.flipX) {
+            renderAngle += Math.PI;
         }
 
-        this.heldWeapon.rotation = angle;
+        this.heldWeapon.rotation = renderAngle;
+    }
+
+    tryShoot(root) {
+        if (!this.hasGun || !this.heldWeapon) return;
+        if (!root.mouse) return;
+        if (!root.mouse.isDown) return;
+        if (this.shootCooldownMs > 0) return;
+
+        // Find gun pivot position in world
+        const handWorld = this.handAnchor.getWorldPosition();
+
+        const weaponLocal = this.heldWeapon.position;
+        const pivot = this.heldWeapon.pivot;
+
+        const gunPivotX = handWorld.x + weaponLocal.x + pivot.x;
+        const gunPivotY = handWorld.y + weaponLocal.y + pivot.y;
+
+        // Aim direction 
+        const aimAngle = this.aimAngle;
+        if (aimAngle === undefined) return;
+
+        // Convert angle to velovity vector
+        const speed = 400;      // px/sec
+        const vx = Math.cos(aimAngle) * speed;
+        const vy = Math.sin(aimAngle) * speed;
+
+        const renderAngle = this.heldWeapon.rotation;
+        const flipX = this.heldWeapon.flipX;
+
+        // Muzzle offset from pivot
+        const muzzleFromPivot = new Vector2(6, -2);
+
+        const localOx = flipX ? -muzzleFromPivot.x : muzzleFromPivot.x;
+        const localOy = muzzleFromPivot.y;
+
+        // Rotate offset into world using gun angle
+        const cos = Math.cos(renderAngle);
+        const sin = Math.sin(renderAngle);
+
+        const muzzleOffsetX = cos * localOx - sin * localOy;
+        const muzzleOffsetY = sin * localOx + cos * localOy;
+
+        const spawnX = gunPivotX + muzzleOffsetX;
+        const spawnY = gunPivotY + muzzleOffsetY;
+
+        // Spawn bullet through event
+        events.emit("SPAWN_BULLET", {
+            position: new Vector2(spawnX, spawnY),
+            velocity: new Vector2(vx, vy),
+        });
+
+        // Start cooldown
+        this.shootCooldownMs = this.fireRateMs;
     }
 }
