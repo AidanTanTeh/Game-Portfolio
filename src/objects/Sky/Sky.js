@@ -16,9 +16,19 @@ const CLOUDS = Array.from({ length: 6 }, (_, i) => ({
     h: 7 + Math.floor(Math.random() * 6),
 }));
 
+const STARS = Array.from({ length: 60 }, () => ({
+    x: Math.random() * GAME_WIDTH,
+    y: Math.random() * (GAME_HEIGHT * 0.55),
+    size: Math.random() < 0.7 ? 1 : 2,
+    phase: Math.random() * Math.PI * 2,
+    speed: 0.004 + Math.random() * 0.003,
+}))
+
 export class Sky {
     constructor() {
         this.progress = 0; // based on hero position
+
+        this.time = 0;
 
         events.on("HERO_POSITION", this, (pos) => {
             // Converts hero x in world into progress (0..1)
@@ -27,12 +37,12 @@ export class Sky {
     }
 
     step(delta) {
-        //
+        this.time += delta;
     }
 
     draw(ctx, cameraX = 0) {
-        const W = GAME_WIDTH;
-        const H = GAME_HEIGHT;
+        const W = ctx.canvas.width;
+        const H = ctx.canvas.height;
 
         const p = this.progress;
 
@@ -47,17 +57,39 @@ export class Sky {
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, W, H);
 
+        // Stars fade in after sunset
+        const starAlpha = Math.max(0, Math.min(1, (p - 0.50) / 0.20));
+        if (starAlpha > 0) {
+            ctx.save();
+            ctx.fillStyle = "#fff";
+
+            for (const s of STARS) {
+                // Twinkle between 0.6-1.0
+                const twinkle = 0.8 + 0.2 * Math.sin(this.time * s.speed + s.phase);
+                ctx.globalAlpha = starAlpha * twinkle;
+                ctx.fillRect(s.x, s.y, s.size, s.size);
+
+                
+            }
+
+            ctx.restore();
+        }
+
         // Clouds
         const cloudAlpha = Math.max(0, 1 - (p - 0.40) / 0.20);
         if (cloudAlpha > 0) {
             ctx.save();
             ctx.globalAlpha = cloudAlpha;
 
-            const parallaxOffset = (cameraX * -0.15) % GAME_WIDTH;
+            const parallaxOffset = (cameraX * -0.15) % W;
 
             ctx.fillStyle = "rgba(255,255,255,0.88)";
             for (const cloud of CLOUDS) {
-                const cx = cloud.x + parallaxOffset;
+                // Move cloud by parallax
+                let cx = cloud.x + parallaxOffset;
+
+                cx = ((cx % (W + cloud.w)) + (W + cloud.w)) % (W + cloud.w) - cloud.w;
+
                 ctx.fillRect(cx, cloud.y, cloud.w, cloud.h);
             }
 
