@@ -21,7 +21,7 @@ import { Explosion } from './src/objects/Effects/Explosion';
 import { Billboard } from './src/objects/Billboard/Billboard';
 import { PORTFOLIO_SECTIONS } from './src/portfolioSections';
 import { getSectionById } from './src/helpers/billboardSections';
-import { Sky } from './src/objects/Sky/sky';
+import { Sky } from './src/objects/Sky/Sky';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -119,7 +119,7 @@ const draw = () => {
     // Clear anything stale
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    sky.draw(ctx);
+    sky.draw(ctx, camera.position.x);
 
     // skySprite.draw(ctx, 0, 0);
     // Svae the current state (for camera offset)
