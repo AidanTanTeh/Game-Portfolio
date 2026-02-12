@@ -6,11 +6,10 @@ import { Animations } from "../../Animations";
 import { ROTATE_BOX } from "./boxAnimations";
 import { DEBUG } from "../../debug";
 import { FrameIndexPattern } from "../../FrameIndexPattern";
-
-
+import { events } from "../../Events";
 
 export class Box extends GameObject {
-    constructor(x, y) {
+    constructor(x, y, sectionId) {
         super({
             position: new Vector2(x, y)
         });
@@ -18,6 +17,12 @@ export class Box extends GameObject {
         this.w = 15;
         this.h = 15;
         this.scale = 1;
+
+        this.sectionId = sectionId;
+        this.isShootable = true;
+        this.isDead = false;
+
+        this.drawLayer = 1;
 
         // Adjust bob speed and amount
         this.bobTime = 0;
@@ -42,6 +47,19 @@ export class Box extends GameObject {
         this.sprite.animations.play("rotate");
     }
 
+    getHitbox() {
+        const world = this.getWorldPosition();
+        const drawW = this.w * this.scale;
+        const drawH = this.h * this.scale;
+
+        return {
+            x: world.x - drawW / 2,
+            y: world.y - drawH / 2,
+            w: drawW,
+            h: drawH
+        }
+    }
+
     drawImage(ctx, x, y) {
         if (DEBUG) {
             // Hitbox
@@ -51,7 +69,7 @@ export class Box extends GameObject {
             ctx.strokeStyle = "cyan";
             ctx.strokeRect(
                 x - drawW / 2,
-                y - drawW / 2,
+                y - drawH / 2,
                 drawW,
                 drawH
             );
@@ -70,5 +88,15 @@ export class Box extends GameObject {
 
         // Moving only the sprite, not the box itself
         this.sprite.position.y = -((this.h * this.scale) / 2) + offsetY;
+    }
+
+    onBulletHit() {
+        if (this.isDead) return;
+        this.isDead = true;
+
+        const p = this.getWorldPosition();
+        events.emit("BOX_EXPLODE", { x: p.x, y: p.y, sectionId: this.sectionId });
+
+        this.destroy();
     }
 }

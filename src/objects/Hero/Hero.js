@@ -27,6 +27,8 @@ export class Hero extends GameObject {
         this.velocityY = 0;
         this.isGrounded = true;
 
+        this.drawLayer = 11;
+
         this.body = new Sprite({
             resource: resources.images.hero,
             frameSize: new Vector2(32, 32),

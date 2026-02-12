@@ -17,6 +17,10 @@ import { drawReticle } from './src/ui/reticle';
 import { Bullet } from './src/objects/Bullet/Bullet';
 import { events } from './src/Events';
 import { Box } from './src/objects/Box/Box';
+import { Explosion } from './src/objects/Effects/Explosion';
+import { Billboard } from './src/objects/Billboard/Billboard';
+import { PORTFOLIO_SECTIONS } from './src/portfolioSections';
+import { getSectionById } from './src/helpers/billboardSections';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -48,11 +52,9 @@ const skySprite = new Sprite({
         frameSize: new Vector2(320, 180)
 })
 
-
 // Add ground
 const ground = new Ground();
 mainScene.addChild(ground);
-
 
 // Add player
 const hero = new Hero(gridCells(6), FLOOR_Y);
@@ -62,8 +64,37 @@ mainScene.addChild(hero);
 const gun = new Gun(gridCells(9), FLOOR_Y);
 mainScene.addChild(gun);
 
-const box = new Box(gridCells(9), FLOOR_Y - 40);
-mainScene.addChild(box);
+// Add billboard sections
+const revealed = new Set();
+
+PORTFOLIO_SECTIONS.forEach((section) => {
+    const box = new Box(section.triggerX, section.boxY ?? (FLOOR_Y - 40), section.id);
+    mainScene.addChild(box);
+});
+
+events.on("BOX_EXPLODE", mainScene, ({ x, y, sectionId }) => {
+    // Prevent duplicates
+    if (revealed.has(sectionId)) return;
+    revealed.add(sectionId);
+    
+    // Add explosion
+    mainScene.addChild(new Explosion(x, y, "#ffcc00"));
+
+    // Add billboard
+    const section = getSectionById(sectionId);
+    if (!section) return;
+
+    const ox = section.billboardOffset?.x ?? -110;
+    const oy = section.billboardOffset?.y ?? -80;
+
+    const bb = new Billboard(Math.round(x + ox), Math.round(y + oy));
+    bb.title = section.title;
+    bb.content = section.content;
+
+    bb.imageKey = section.imageKey;
+
+    mainScene.addChild(bb);
+});
 
 // Add camera
 const camera = new Camera();

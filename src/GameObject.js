@@ -6,6 +6,8 @@ export class GameObject {
         this.position = position ?? new Vector2(0, 0);
         this.children = [];
         this.parent = null;
+
+        this.drawLayer = 0; // Larger the number, the more front it is drawn
     }
 
     // First entry point of the loop
@@ -30,7 +32,10 @@ export class GameObject {
         // Do the actual rendering for Images
         this.drawImage(ctx, drawPosX, drawPosY);
 
-        this.children.forEach((child) => child.draw(ctx, drawPosX, drawPosY));
+        this.children
+            .slice()
+            .sort((a, b) => a.drawLayer - b.drawLayer)
+            .forEach(child => child.draw(ctx, drawPosX, drawPosY));
     }
 
     drawImage(ctx, drawPosX, drawPosY) {

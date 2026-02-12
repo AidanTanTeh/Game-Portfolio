@@ -3,6 +3,7 @@ import { GameObject } from "../../GameObject";
 import { isSpaceFree } from "../../helpers/grid";
 import { FLOOR_Y, WORLD_MAX_X, WORLD_MIN_X } from "../../world/worldConstants";
 import { walls } from "../../levels/level1";
+import { rectsIntersect } from "../../helpers/collisions";
 
 export class Bullet extends GameObject {
     constructor({ position, velocity, lifeMs = 900}) {
@@ -13,9 +14,11 @@ export class Bullet extends GameObject {
         // Small rectangle for bullets
         this.w = 2;
         this.h = 2;
+
+        this.drawLayer = 11;
     }
 
-    step(delta) {
+    step(delta, root) {
         // Delta converted from milliseconds to seconds
         const dt = delta / 1000;
 
@@ -49,6 +52,27 @@ export class Bullet extends GameObject {
         this.lifeMs -= delta;
         if (this.lifeMs <= 0) {
             this.destroy();
+        }
+
+        const bulletBox = {
+            x: this.position.x,
+            y: this.position.y,
+            w: this.w,
+            h: this.h,
+        };
+
+        // Look for shootable targets among root children
+        for (const obj of root.children) {
+            if (!obj.isShootable || typeof obj.getHitbox !== "function") continue;
+        
+            const targetBox = obj.getHitbox();
+            if (rectsIntersect(bulletBox, targetBox)) {
+                // Tell target it got hit
+                if (typeof obj.onBulletHit === "function") obj.onBulletHit();
+                
+                this.destroy();
+                return;
+            }
         }
     }
 
