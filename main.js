@@ -21,11 +21,14 @@ import { Explosion } from './src/objects/Effects/Explosion';
 import { Billboard } from './src/objects/Billboard/Billboard';
 import { PORTFOLIO_SECTIONS } from './src/portfolioSections';
 import { getSectionById } from './src/helpers/billboardSections';
+import { Sky } from './src/objects/Sky/sky';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
 const ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
+
+const sky = new Sky();
 
 // Establish the root scene
 const mainScene = new GameObject({
@@ -45,12 +48,6 @@ events.on("SPAWN_BULLET", mainScene, ({ position, velocity }) => {
 // Add mouse
 const mouse = new Mouse(canvas);
 mainScene.mouse = mouse;
-
-// Build up the scene: add sky
-const skySprite = new Sprite({
-        resource: resources.images.sky,
-        frameSize: new Vector2(320, 180)
-})
 
 // Add ground
 const ground = new Ground();
@@ -108,6 +105,7 @@ mainScene.input = new Input();
 
 // Establish update and draw loops
 const update = (delta) => {
+    sky.step(delta);
     mainScene.stepEntry(delta, mainScene);
 
     // Convert mouse screen coords to world coords using camera
@@ -121,7 +119,9 @@ const draw = () => {
     // Clear anything stale
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    skySprite.draw(ctx, 0, 0);
+    sky.draw(ctx);
+
+    // skySprite.draw(ctx, 0, 0);
     // Svae the current state (for camera offset)
     ctx.save();
 
