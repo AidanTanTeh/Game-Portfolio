@@ -21,7 +21,7 @@ import { Explosion } from './src/objects/Effects/Explosion';
 import { Billboard } from './src/objects/Billboard/Billboard';
 import { PORTFOLIO_SECTIONS } from './src/portfolioSections';
 import { getSectionById } from './src/helpers/billboardSections';
-import { Sky } from './src/objects/Sky/Sky';
+import { Sky } from './src/objects/Sky/sky';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -105,8 +105,8 @@ mainScene.input = new Input();
 
 // Establish update and draw loops
 const update = (delta) => {
-    sky.step(delta);
     mainScene.stepEntry(delta, mainScene);
+    sky.step(delta);
 
     // Convert mouse screen coords to world coords using camera
     mouse.updateWorld(camera);
@@ -140,6 +140,7 @@ const draw = () => {
     // Restore to original state
     ctx.restore();
 
+    // Draw mouse reticle
     drawReticle(ctx, mouse);
 }
 

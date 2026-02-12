@@ -27,13 +27,7 @@ const STARS = Array.from({ length: 60 }, () => ({
 export class Sky {
     constructor() {
         this.progress = 0; // based on hero position
-
         this.time = 0;
-
-        events.on("HERO_POSITION", this, (pos) => {
-            // Converts hero x in world into progress (0..1)
-            this.progress = Math.max(0, Math.min(1, pos.x / WORLD_MAX_X));
-        });
     }
 
     step(delta) {
@@ -43,6 +37,9 @@ export class Sky {
     draw(ctx, cameraX = 0) {
         const W = ctx.canvas.width;
         const H = ctx.canvas.height;
+
+        const worldLeft = -cameraX;
+        this.progress = Math.max(0, Math.min(1, worldLeft / WORLD_MAX_X));
 
         const p = this.progress;
 
@@ -57,19 +54,37 @@ export class Sky {
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, W, H);
 
+        if (p > 0.35 && p < 0.88) {
+            const glowStr = p < 0.55 
+                ? (p - 0.35) / 0.20      // fade in
+                : 1 - (p - 0.55) / 0.25; // fade out
+
+            const hGlow = ctx.createLinearGradient(0, H * 0.55, 0, H);
+            hGlow.addColorStop(0, "rgba(255,120,30,0)");
+            hGlow.addColorStop(1, `rgba(255,80,0,${(glowStr * 0.28).toFixed(3)})`);
+
+            ctx.fillStyle = hGlow;
+            ctx.fillRect(0, H * 0.55, W, H * 0.45);
+        }
+
         // Stars fade in after sunset
         const starAlpha = Math.max(0, Math.min(1, (p - 0.50) / 0.20));
         if (starAlpha > 0) {
             ctx.save();
             ctx.fillStyle = "#fff";
 
+            const starParallax = 0.03;
+            const starOffset = (-worldLeft * starParallax) % W;
+           
             for (const s of STARS) {
                 // Twinkle between 0.6-1.0
                 const twinkle = 0.8 + 0.2 * Math.sin(this.time * s.speed + s.phase);
                 ctx.globalAlpha = starAlpha * twinkle;
-                ctx.fillRect(s.x, s.y, s.size, s.size);
-
                 
+                let sx = s.x + starOffset;
+                sx = ((sx % W) + W) % W;
+
+                ctx.fillRect(sx, s.y, s.size, s.size);
             }
 
             ctx.restore();
@@ -81,7 +96,8 @@ export class Sky {
             ctx.save();
             ctx.globalAlpha = cloudAlpha;
 
-            const parallaxOffset = (cameraX * -0.15) % W;
+            const cloudParallax = 0.15;
+            const parallaxOffset = (-worldLeft * cloudParallax) % W;
 
             ctx.fillStyle = "rgba(255,255,255,0.88)";
             for (const cloud of CLOUDS) {
@@ -90,7 +106,19 @@ export class Sky {
 
                 cx = ((cx % (W + cloud.w)) + (W + cloud.w)) % (W + cloud.w) - cloud.w;
 
-                ctx.fillRect(cx, cloud.y, cloud.w, cloud.h);
+                const cy = cloud.y;
+                const cw = cloud.w;
+                const ch = cloud.h;
+
+                // main body
+                ctx.fillRect(cx, cy + Math.floor(ch * 0.4), cw, Math.ceil(ch * 0.6));
+
+                // upper bumps
+                const b1W = Math.floor(cw * 0.38);
+                const b2W = Math.floor(cw * 0.32);
+
+                ctx.fillRect(cx + Math.floor(cw * 0.12), cy, b1W, ch);
+                ctx.fillRect(cx + Math.floor(cw * 0.54), cy + Math.floor(ch * 0.18), b2W, Math.ceil(ch * 0.82));
             }
 
             ctx.restore();
@@ -98,7 +126,7 @@ export class Sky {
     }
 }
 
-// PARALLAX EFFECT ////////////////////////////////////
+// PARALLAX HELPERS
 // Lerp interpolation: blends a to b by (0..1)
 function lerp(a, b, t) {
     return a + (b - a) * t;
