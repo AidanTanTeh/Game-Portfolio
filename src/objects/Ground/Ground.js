@@ -25,10 +25,14 @@ export class Ground extends GameObject {
         const img = ground.image;
     
         // cavvas width is 320
-        const canvasWidth = 320;
+        const canvasWidth = ctx.canvas.width;
+
+        const camX = this.parent?.camera?.position.x ?? 0;
+
+        const worldLeft = -camX;
 
         // Where does the visible world start?
-        const startX = Math.floor(x / this.tileWidth) * this.tileWidth - this.tileWidth;
+        const startX = Math.floor((worldLeft - this.tileWidth) / this.tileWidth) * this.tileWidth;
 
         // How many tiles needed to cover screen
         const tilesNeeded = Math.ceil(canvasWidth / this.tileWidth) + 3;
@@ -40,6 +44,8 @@ export class Ground extends GameObject {
         // FOR DEBUGGING:
         // Show where ground is being drawn (top-left)
         if (DEBUG) {
+            console.log("camX", camX, "worldLeft", worldLeft, "startX", startX);
+
             ctx.fillStyle = "magenta";
             ctx.fillRect(x, y, 6, 6);
             

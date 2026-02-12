@@ -99,6 +99,7 @@ events.on("BOX_EXPLODE", mainScene, ({ x, y, sectionId }) => {
 // Add camera
 const camera = new Camera();
 mainScene.addChild(camera);
+mainScene.camera = camera;
 
 
 // Add an Input class to the main scene
