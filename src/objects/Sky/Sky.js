@@ -1,5 +1,6 @@
 import { GAME_HEIGHT, GAME_WIDTH, WORLD_MAX_X } from "../../world/worldConstants";
 import { events } from "../../Events";
+import { clamp01 } from "../../helpers/clamp01";
 
 const SKY_STOPS = [
     { p: 0.00, top: [110,190,255], bot: [200,235,255] },
@@ -22,12 +23,19 @@ const STARS = Array.from({ length: 60 }, () => ({
     size: Math.random() < 0.7 ? 1 : 2,
     phase: Math.random() * Math.PI * 2,
     speed: 0.004 + Math.random() * 0.003,
-}))
+}));
 
 export class Sky {
     constructor() {
-        this.progress = 0; // based on hero position
+        this.heroX = 0;
+        this.progress = 0;
+        this.progressSmooth = 0;
         this.time = 0;
+
+        events.on("HERO_POSITION", this, (pos) => {
+            this.heroX = pos.x;
+            this.progress = clamp01(this.heroX / WORLD_MAX_X);
+        });
     }
 
     step(delta) {
@@ -39,12 +47,12 @@ export class Sky {
         const H = ctx.canvas.height;
 
         const worldLeft = -cameraX;
-        this.progress = Math.max(0, Math.min(1, worldLeft / WORLD_MAX_X));
 
-        const p = this.progress;
+        this.progressSmooth += (this.progress - this.progressSmooth) * 0.06;
+        const p = this.progressSmooth;
 
         // Blend day and night colours
-        const { top, bot } = getSkyColors(this.progress);
+        const { top, bot } = getSkyColors(p);
 
         // Vertical gradient
         const grad = ctx.createLinearGradient(0, 0, 0, H);
@@ -54,6 +62,7 @@ export class Sky {
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, W, H);
 
+        // Stars
         if (p > 0.35 && p < 0.88) {
             const glowStr = p < 0.55 
                 ? (p - 0.35) / 0.20      // fade in
@@ -67,7 +76,6 @@ export class Sky {
             ctx.fillRect(0, H * 0.55, W, H * 0.45);
         }
 
-        // Stars fade in after sunset
         const starAlpha = Math.max(0, Math.min(1, (p - 0.50) / 0.20));
         if (starAlpha > 0) {
             ctx.save();
@@ -96,7 +104,7 @@ export class Sky {
             ctx.save();
             ctx.globalAlpha = cloudAlpha;
 
-            const cloudParallax = 0.15;
+            const cloudParallax = 0.13;
             const parallaxOffset = (-worldLeft * cloudParallax) % W;
 
             ctx.fillStyle = "rgba(255,255,255,0.88)";
@@ -166,4 +174,3 @@ function getSkyColors(progress) {
         bot: lerpColor(s0.bot, s1.bot, t),
     };
 }
-

@@ -22,6 +22,8 @@ import { Billboard } from './src/objects/Billboard/Billboard';
 import { PORTFOLIO_SECTIONS } from './src/portfolioSections';
 import { getSectionById } from './src/helpers/billboardSections';
 import { Sky } from './src/objects/Sky/sky';
+import { SunMoon } from './src/objects/SunMoon/SunMoon';
+import { WORLD_MAX_X, WORLD_MIN_X } from './src/world/worldConstants';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -29,6 +31,7 @@ const ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
 
 const sky = new Sky();
+const sunMoon = new SunMoon();
 
 // Establish the root scene
 const mainScene = new GameObject({
@@ -54,7 +57,7 @@ const ground = new Ground();
 mainScene.addChild(ground);
 
 // Add player
-const hero = new Hero(gridCells(6), FLOOR_Y);
+const hero = new Hero(WORLD_MIN_X, FLOOR_Y);
 mainScene.addChild(hero);
 
 // Add gun
@@ -107,6 +110,7 @@ mainScene.input = new Input();
 const update = (delta) => {
     mainScene.stepEntry(delta, mainScene);
     sky.step(delta);
+    sunMoon.step(delta);
 
     // Convert mouse screen coords to world coords using camera
     mouse.updateWorld(camera);
@@ -116,13 +120,15 @@ const update = (delta) => {
 };
 
 const draw = () => {
+    const W = ctx.canvas.width;
+    const H = ctx.canvas.height;
+
     // Clear anything stale
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     sky.draw(ctx, camera.position.x);
+    sunMoon.draw(ctx, W, H);
 
-    // skySprite.draw(ctx, 0, 0);
-    // Svae the current state (for camera offset)
     ctx.save();
 
     // Offset by camera position
