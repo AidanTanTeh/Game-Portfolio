@@ -8,9 +8,12 @@ class Resources {
             gunPickup: "./sprites/gunGreyPickup.png",
             gunHeld: "./sprites/gunGreyHeld.png",
             boxSheet: "./sprites/boxsheet2.png",
+
+            bbIntro: "./sprites/me.png",
+            bbAbout: "./sprites/mcd.png",
             bbProjects: "./sprites/snapfit.png",
-            bbAbout: "./sprites/me.png",
             bbHobbies: "./sprites/climbing.png",
+            bbGames: "./sprites/gamerSeal.png",
         }
 
         // Bucket to keep all images

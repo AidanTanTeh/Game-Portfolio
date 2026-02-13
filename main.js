@@ -33,6 +33,7 @@ const canvas = document.querySelector("#game-canvas");
 const ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
 
+// Add background for game
 const sky = new Sky();
 const sunMoon = new SunMoon();
 const buildings = new Buildings();
@@ -86,7 +87,7 @@ const hero = new Hero(WORLD_MIN_X, FLOOR_Y - 200);
 mainScene.addChild(hero);
 
 // Add gun
-const gun = new Gun(gridCells(9), FLOOR_Y);
+const gun = new Gun(gridCells(6), FLOOR_Y);
 mainScene.addChild(gun);
 
 // Add sign
