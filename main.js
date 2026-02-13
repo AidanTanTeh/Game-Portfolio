@@ -27,11 +27,13 @@ import { Sign } from './src/objects/Sign/Sign';
 import { StartScreenUI } from './src/ui/StartScreenUI';
 import { PauseManager } from './src/game/PauseManager';
 import { SignModal } from './src/ui/SignModal';
+import { PortfolioSummary } from './src/ui/PortfolioSummary';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
 const ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
+const portfolioPage = document.getElementById("portfolio-page");
 
 // Add background for game
 const sky = new Sky();
@@ -70,7 +72,32 @@ startUI.show();
 
 events.on("START_GAME", mainScene, () => {
     startUI.hide();
+
+    // hide portfolio page
+    portfolioPage?.classList.add("hidden");
+
+    // disable scrolling
+    document.body.classList.remove("allow-scroll");
+
     pauseManager.setPaused(false);
+});
+
+const portfolioSummary = new PortfolioSummary();
+
+events.on("SKIP_GAME", mainScene, () => {
+    startUI.hide();
+
+    // show portfolio
+    portfolioPage?.classList.remove("hidden");
+
+    // enable scrolling 
+    document.body.classList.add("allow-scroll");
+
+    pauseManager.setPaused(true);
+    canvas.style.cursor = "default";
+
+    // Scroll to portfolio section
+    portfolioPage?.scrollIntoView({ behavior: "smooth" });
 });
 
 // Add camera

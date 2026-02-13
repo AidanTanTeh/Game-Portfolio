@@ -5,7 +5,7 @@ export const PORTFOLIO_SECTIONS = [
     {
         id: "intro",
         title: "INTRODUCTION",
-        content: "HI! My name is Aidan and I'm currently learning how to work with html and css canvases. This is my first wesite, so pls be nice and I hope you like it!",
+        content: "HI! My name is Aidan and I'm currently learning how to work with html and css canvases. This is my first website, so pls be nice and I hope you like it!",
         triggerX: gridCells(13), // where the box is in the world
         boxY: FLOOR_Y - 50,
         billboardOffset: { x: -110, y: -80 },

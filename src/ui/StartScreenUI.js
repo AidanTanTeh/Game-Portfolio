@@ -4,7 +4,8 @@ export class StartScreenUI {
     constructor({
         rootId = "start-screen",
         startBtnId = "btn-start",
-        secretBtnId = "btn-options",
+        skipBtnId = "btn-skip",
+        secretBtnId = "btn-secret",
         secretScreenId = "secret-screen",
         secretBackId = "secret-back",
         cloudLayerId = "cloud-layer",
@@ -13,6 +14,8 @@ export class StartScreenUI {
         this.root = document.getElementById(rootId);
         this.btnStart = document.getElementById(startBtnId);
         
+        this.btnSkip = document.getElementById(skipBtnId);
+
         this.btnSecret = document.getElementById(secretBtnId);
         this.secretScreen = document.getElementById(secretScreenId);
         this.secretBack = document.getElementById(secretBackId);
@@ -38,6 +41,14 @@ export class StartScreenUI {
         if (this.btnStart) {
             this.btnStart.addEventListener("click", () => {
                 events.emit("START_GAME");
+            });
+        }
+
+        // SKIP GAME
+        if (this.btnSkip) {
+            this.btnSkip.addEventListener("click", () => {
+                console.log("Skip clicked");
+                events.emit("SKIP_GAME");
             });
         }
 

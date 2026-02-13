@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Run & Gun Portfolio</title>
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
@@ -31,8 +32,8 @@
                     <button id="btn-start" class="pixel-btn pixel-btn--green">GAME START</button>
                     
                     <div class="menu-row">
-                        <button id="btn-load" class="pixel-btn">SKIP GAME</button>
-                        <button id="btn-options" class="pixel-btn">SUPER SECRET BUTTON</button>
+                        <button id="btn-skip" class="pixel-btn">SKIP GAME</button>
+                        <button id="btn-secret" class="pixel-btn">SUPER SECRET BUTTON</button>
                     </div>
                 </div>
 
@@ -93,7 +94,7 @@
         <div id="secret-screen" class="secret-screen hidden" aria-hidden="true">
             <img
                 class="secret-bg"
-                src="/public/sprites/cuteSeal.png"
+                src="/sprites/cuteSeal.png"
                 alt="Cute seal attack background"
             />
 
@@ -128,6 +129,99 @@
                 </div>
             </div>
         </div>
+
+        <!--Portfolio summary page-->
+        <section id="portfolio-page" class="portfolio-page hidden">
+            <nav class="portfolio-nav">
+                <!--Hud left side-->
+                <div class="hud-left">
+                    <div class="avatar-box">
+                        <img src="/sprites/profPic.png" alt="Avatar"/>
+                    </div>
+
+                    <div class="hud-meta">
+                        <div class="hud-title">LVL 1 DOOMSCROLLER</div>
+                        <div class="xp-bar"><div class="xp-fill"></div></div>
+                    </div>
+                </div>
+
+                <!--Hud links-->
+                <div class="hud-links">
+                    <button class="hud-btn" data-jump="#p-hero">INTRO</button>
+                    <button class="hud-btn" data-jump="#p-lore">ABOUT ME</button>
+                    <button class="hud-btn" data-jump="#p-projects">PROJECTS</button>
+                    <button class="hud-btn" data-jump="#p-contact">CONTACT</button>
+                </div>
+            </nav>
+
+            <!--Main box-->
+            <main class="portfolio-main">
+                <section id="p-hero" class="room room-hero">
+                    <div class="pixel-box gold hero-panel">
+                        <div class="hero-avatar">
+                            <img src="/sprites/me.png" alt="Avatar" />
+                        </div>
+
+                        <div>
+                            <h2 class="pixel-h2" style="color:#ffd34a;">INTRODUCTION</h2>
+
+                            <div>
+                                <span class="pixel-text" id="p-intro-text"></span><span class="type-cursor"></span>
+                            </div>
+
+                            <div class="hero-actions">
+                                <button class="pixel-button gold" data-jump="#p-projects">VIEW PROJECTS</button>
+                                <button class="pixel-button" data-jump="#p-lore">ABOUT ME</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!--Journal-->
+                <section id="p-lore" class="room">
+                    <h2 class="pixel-h2">ADVENTURER'S JOURNAL</h2>
+                    <div class="grid-3">
+
+                        <div class="pixel-box card-blue">
+                            <h3 class="pixel-h3">About Me</h3>
+                            <p class="pixel-text italic" id="p-about-text"></p>
+                        </div>
+
+                        <div class="pixel-box card-purple">
+                            <h3 class="pixel-h3">Hobbies</h3>
+                            <p class="pixel-text" id="p-hobbies-text"></p>
+                        </div>
+
+                        <div class="pixel-box card-green">
+                            <h3 class="pixel-h3">Games</h3>
+                            <p class="pixel-text" id="p-games-text"></p>
+                        </div>
+                    </div>
+                </section>
+
+                <!--Recent projects-->
+                <section id="p-projects" class="room">
+                    <h2 class="pixel-h2">RECENT PROJECTS</h2>
+                    <div class="grid-2" id="projects-grid"></div>
+                </section>
+
+                <!--Contact-->
+                <section id="p-contact" class="room">
+                    <h2 class="pixel-h2">CONTACT ME</h2>
+                    <form class="pixel-form" id="contact-form">
+                        <input class="pixel-input" placeholder="Name"/>
+                        <input class="pixel-input" placeholder="Email"/>
+                        <textarea class="pixel-input" rows="4" placeholder="Message"></textarea>
+                        <button class="pixel-button gold" type="submit">SLIDE INTO MY DMS</button>
+                    </form>
+                </section>
+            </main>
+
+            <!--Footer-->
+            <footer class="portfolio-footer">
+                <span>Aidan's Portfolio Summary</span>
+            </footer>
+        </section>
 
         <script type="module" src="/main.js"></script>
     </body>

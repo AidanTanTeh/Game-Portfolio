@@ -107,14 +107,14 @@ export class Billboard extends GameObject {
         // Title text
         const titleSize = Math.max(8, Math.round(10 * s));
         ctx.fillStyle = "#1a1a1a";
-        ctx.font = `${titleSize}px "Press Start 2P", monospace`;
+        ctx.font = `${titleSize}px monospace`;
         ctx.textBaseline = "middle";
         ctx.fillText(this.title, Math.round(innerX + pad), Math.round(y + frame + panelPad + headerH / 2));
 
         // Content text
         const bodySize = Math.max(6, Math.round(7 * s));
         const lineH = Math.max(10, Math.round(12 * s));
-        ctx.font = `${bodySize}px "Press Start 2P", monospace`;
+        ctx.font = `${bodySize}px monospace`;
         ctx.textBaseline = "top";
         ctx.fillStyle = "#e8e8e8";
 
