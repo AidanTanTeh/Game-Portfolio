@@ -7,7 +7,29 @@
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
+        <!--Canvas-->
         <canvas id="game-canvas" width="320" height="180"></canvas>
+        
+        <!--Sign popup-->
+        <div id="tutorial-modal" class="modal hidden" aria-hidden="true">
+            <div class="modal-panel" role="dialog" aria-modal="true">
+                <button id="tutorial-close" class="modal-close" aria-label="Close">X</button>
+
+                <h2 class="modal-title">WELCOME TO MY PORTFOLIO GAME!</h2>
+
+                <div class="modal-body">
+                    <p class ="section-heading"><b>Objective</b></p>
+                    <p>Find the mario pipe at the end of the road. Pick up the gun and shoot the npm packages to install more about me!</p>
+
+                    <p class ="section-heading"><b>Controls</b></p>
+                    <p>Move: A / D (or Arrow Keys)</p>
+                    <p>Jump: W or Space</p>
+                    <p>Aim: Mouse</p>
+                    <p>Shoot: Left Click (after picking up gun)</p>
+                </div>
+            </div>
+        </div>
+
         <script type="module" src="/main.js"></script>
     </body>
 </html>

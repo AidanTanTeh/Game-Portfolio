@@ -23,6 +23,7 @@ import { Sky } from './src/objects/Sky/sky';
 import { SunMoon } from './src/objects/SunMoon/SunMoon';
 import { WORLD_MAX_X, WORLD_MIN_X } from './src/world/worldConstants';
 import { Buildings } from './src/objects/Buildings/Buildings';
+import { Sign } from './src/objects/Sign/Sign';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -38,19 +39,17 @@ const mainScene = new GameObject({
     position: new Vector2(0, 0)
 });
 
-events.on("SPAWN_BULLET", mainScene, ({ position, velocity }) => {
-    mainScene.addChild(
-        new Bullet({
-            position,
-            velocity,
-            lifeMs: 900,
-        })
-    )
-});
+// Add an Input class to the main scene
+mainScene.input = new Input();
 
 // Add mouse
 const mouse = new Mouse(canvas);
 mainScene.mouse = mouse;
+
+// Add camera
+const camera = new Camera();
+mainScene.addChild(camera);
+mainScene.camera = camera;
 
 // Add ground
 const ground = new Ground();
@@ -64,7 +63,22 @@ mainScene.addChild(hero);
 const gun = new Gun(gridCells(9), FLOOR_Y);
 mainScene.addChild(gun);
 
-// Add billboard sections
+// Add sign
+const sign = new Sign(gridCells(3), FLOOR_Y);
+mainScene.addChild(sign);
+
+// Add bullets
+events.on("SPAWN_BULLET", mainScene, ({ position, velocity }) => {
+    mainScene.addChild(
+        new Bullet({
+            position,
+            velocity,
+            lifeMs: 900,
+        })
+    )
+});
+
+// Add billboard / boxes
 const revealed = new Set();
 
 PORTFOLIO_SECTIONS.forEach((section) => {
@@ -96,24 +110,72 @@ events.on("BOX_EXPLODE", mainScene, ({ x, y, sectionId }) => {
     mainScene.addChild(bb);
 });
 
-// Add camera
-const camera = new Camera();
-mainScene.addChild(camera);
-mainScene.camera = camera;
+// Pausing logic for sign
+let isPaused = false;
 
+const modal = document.getElementById("tutorial-modal");
+const closeBtn = document.getElementById("tutorial-close");
 
-// Add an Input class to the main scene
-mainScene.input = new Input();
+function setPaused(v) {
+    isPaused = v;
 
+    mainScene.input.clearFrameInputs();
+    mouse.clearFrameInputs();
+
+    // Stop mouse hold from firing instantly after unpause
+    if (v) {
+        mouse.isDown = false;
+        mouse.pressed = false;
+        mouse.released = false;
+
+        canvas.style.cursor = "default";
+    } else {
+        canvas.style.cursor = "none";
+    }
+}
+
+function showTutorial() {
+    if (!modal) return;
+
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+
+    setPaused(true);
+}
+
+function hideTutorial() {
+    if (!modal) return;
+
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+
+    setPaused(false);
+}
+
+if (closeBtn) closeBtn.addEventListener("click", hideTutorial);
+
+window.addEventListener("keydown", (e) => {
+    if (!isPaused) return;
+    if (e.code === "Escape") hideTutorial();
+});
+
+// Sign triggers
+events.on("SHOW_TUTORIAL", mainScene, showTutorial);
 
 // Establish update and draw loops
 const update = (delta) => {
+    mouse.updateWorld(camera);
+
+    if (isPaused) {
+        // Don’t step the scene
+        mainScene.input.clearFrameInputs();
+        mouse.clearFrameInputs();
+        return;
+    }
+
     mainScene.stepEntry(delta, mainScene);
     sky.step(delta);
     sunMoon.step(delta);
-
-    // Convert mouse screen coords to world coords using camera
-    mouse.updateWorld(camera);
 
     mainScene.input.clearFrameInputs();
     mouse.clearFrameInputs();
@@ -148,7 +210,7 @@ const draw = () => {
     ctx.restore();
 
     // Draw mouse reticle
-    drawReticle(ctx, mouse);
+     if (!isPaused) drawReticle(ctx, mouse);
 }
 
 // Start the game!
