@@ -1,6 +1,4 @@
 import './style.css'
-import { resources } from './src/Resource';
-import { Sprite } from './src/Sprite';
 import { Vector2 } from './src/Vector2';
 import { GameLoop } from './src/Gameloop';
 import { Input } from './src/Input';
@@ -24,6 +22,7 @@ import { getSectionById } from './src/helpers/billboardSections';
 import { Sky } from './src/objects/Sky/sky';
 import { SunMoon } from './src/objects/SunMoon/SunMoon';
 import { WORLD_MAX_X, WORLD_MIN_X } from './src/world/worldConstants';
+import { Buildings } from './src/objects/Buildings/Buildings';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -32,6 +31,7 @@ ctx.imageSmoothingEnabled = false;
 
 const sky = new Sky();
 const sunMoon = new SunMoon();
+const buildings = new Buildings();
 
 // Establish the root scene
 const mainScene = new GameObject({
@@ -128,6 +128,7 @@ const draw = () => {
 
     sky.draw(ctx, camera.position.x);
     sunMoon.draw(ctx, W, H);
+    buildings.draw(ctx, camera.position.x);
 
     ctx.save();
 
