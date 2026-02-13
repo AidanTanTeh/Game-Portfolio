@@ -24,6 +24,9 @@ import { SunMoon } from './src/objects/SunMoon/SunMoon';
 import { WORLD_MAX_X, WORLD_MIN_X } from './src/world/worldConstants';
 import { Buildings } from './src/objects/Buildings/Buildings';
 import { Sign } from './src/objects/Sign/Sign';
+import { StartScreenUI } from './src/ui/StartScreenUI';
+import { PauseManager } from './src/game/PauseManager';
+import { SignModal } from './src/ui/SignModal';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -46,6 +49,29 @@ mainScene.input = new Input();
 const mouse = new Mouse(canvas);
 mainScene.mouse = mouse;
 
+// Add pause manager
+const pauseManager = new PauseManager({
+    input: mainScene.input,
+    mouse,
+    canvas
+});
+
+// Add sign modal
+const signModal = new SignModal({
+    pauseManager
+});
+
+// Add start screen
+const startUI = new StartScreenUI();
+
+pauseManager.setPaused(true);
+startUI.show();
+
+events.on("START_GAME", mainScene, () => {
+    startUI.hide();
+    pauseManager.setPaused(false);
+});
+
 // Add camera
 const camera = new Camera();
 mainScene.addChild(camera);
@@ -56,7 +82,7 @@ const ground = new Ground();
 mainScene.addChild(ground);
 
 // Add player
-const hero = new Hero(WORLD_MIN_X, FLOOR_Y);
+const hero = new Hero(WORLD_MIN_X, FLOOR_Y - 200);
 mainScene.addChild(hero);
 
 // Add gun
@@ -110,63 +136,16 @@ events.on("BOX_EXPLODE", mainScene, ({ x, y, sectionId }) => {
     mainScene.addChild(bb);
 });
 
-// Pausing logic for sign
-let isPaused = false;
-
-const modal = document.getElementById("tutorial-modal");
-const closeBtn = document.getElementById("tutorial-close");
-
-function setPaused(v) {
-    isPaused = v;
-
-    mainScene.input.clearFrameInputs();
-    mouse.clearFrameInputs();
-
-    // Stop mouse hold from firing instantly after unpause
-    if (v) {
-        mouse.isDown = false;
-        mouse.pressed = false;
-        mouse.released = false;
-
-        canvas.style.cursor = "default";
-    } else {
-        canvas.style.cursor = "none";
-    }
-}
-
-function showTutorial() {
-    if (!modal) return;
-
-    modal.classList.remove("hidden");
-    modal.setAttribute("aria-hidden", "false");
-
-    setPaused(true);
-}
-
-function hideTutorial() {
-    if (!modal) return;
-
-    modal.classList.add("hidden");
-    modal.setAttribute("aria-hidden", "true");
-
-    setPaused(false);
-}
-
-if (closeBtn) closeBtn.addEventListener("click", hideTutorial);
-
-window.addEventListener("keydown", (e) => {
-    if (!isPaused) return;
-    if (e.code === "Escape") hideTutorial();
+// Sign triggers tutorial
+events.on("SHOW_TUTORIAL", mainScene, () => {
+    signModal.show();
 });
-
-// Sign triggers
-events.on("SHOW_TUTORIAL", mainScene, showTutorial);
 
 // Establish update and draw loops
 const update = (delta) => {
     mouse.updateWorld(camera);
 
-    if (isPaused) {
+    if (pauseManager.isPaused) {
         // Don’t step the scene
         mainScene.input.clearFrameInputs();
         mouse.clearFrameInputs();
@@ -210,7 +189,7 @@ const draw = () => {
     ctx.restore();
 
     // Draw mouse reticle
-     if (!isPaused) drawReticle(ctx, mouse);
+     if (!pauseManager.isPaused) drawReticle(ctx, mouse);
 }
 
 // Start the game!

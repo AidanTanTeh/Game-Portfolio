@@ -7,6 +7,105 @@
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
+        <!-- Start screen-->
+        <div id="start-screen" class="start-screen">
+            <div class="cloud-layer" id="cloud-layer"></div>
+
+            <div class="scanlines" aria-hidden="true"></div>
+
+            <div class="start-ui">
+                <!--Title board-->
+                <div class="title-wrap bobbing">
+                    <div class="wood-panel wood-panel--title">
+                        <h1 class="title">PORTFOLIO RUN</h1>
+                        <div class="subtitle-row">
+                            <span class="dot">●</span>
+                            <span class="subtitle">Discover me!</span>
+                            <span class="dot">●</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Buttons-->
+                <div class="menu">
+                    <button id="btn-start" class="pixel-btn pixel-btn--green">GAME START</button>
+                    
+                    <div class="menu-row">
+                        <button id="btn-load" class="pixel-btn">SKIP GAME</button>
+                        <button id="btn-options" class="pixel-btn">SUPER SECRET BUTTON</button>
+                    </div>
+                </div>
+
+                <!--Controls panel-->
+                <div class="controls-panel">
+                    <div class="wood-panel wood-panel--controls">
+                        <h2 class="panel-title">CONTROLS</h2>
+
+                        <div class="controls-grid">
+                            <div class="controls-col">
+                                <div class="label">MOVEMENT</div>
+
+                                <div class="keys-row">
+                                    <div class="key">W</div>
+                                    <div class="key">A</div>
+                                    <div class="key">D</div>
+                                </div>
+
+                                <div class="keys-row">
+                                    <div class="key">↑</div>
+                                    <div class="key">←</div>
+                                    <div class="key">→</div>
+                                </div>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <div class="controls-col">
+                                <div class="label">ACTIONS</div>
+
+                                <div class="keys-row keys-row--actions">
+                                    <div class="key key--wide">SPACE</div>
+                                    <div class="key">CLICK</div>
+                                </div>
+
+                                <div class="actions-sub">
+                                    <span>JUMP</span>
+                                    <span>SHOOT</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Tip-->
+                <div class="tip-wrap">
+                    <div class="tip-panel">
+                        <p id="daily-tip">Aidan's Tip: Use desktop to play interactive browser portfolio game, so cool! Wow!</p>
+                    </div>
+                </div>
+
+                <!--Version text-->
+                <div class="version">v 1.4.5</div>
+            </div>
+        </div>
+
+        <!--Secret screen-->
+        <div id="secret-screen" class="secret-screen hidden" aria-hidden="true">
+            <img
+                class="secret-bg"
+                src="/public/sprites/cuteSeal.png"
+                alt="Cute seal attack background"
+            />
+
+            <div class="secret-text">
+                CUTE SEAL ATTACK!
+            </div>
+
+            <button id="secret-back" class="secret-back" aria-label="Back">
+                BACK
+            </button>
+        </div>
+
         <!--Canvas-->
         <canvas id="game-canvas" width="320" height="180"></canvas>
         

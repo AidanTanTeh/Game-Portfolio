@@ -16,8 +16,8 @@ export const PORTFOLIO_SECTIONS = [
     {
         id: "projects",
         title: "PROJECTS",
-        content: "A mobile fitness app with a real-time GPS tracking system using expo-location and live route visualization along with a post-workout selfie capture and Gemini multimodal AI",
-        triggerX: gridCells(30), // where the box is in the world
+        content: "I created a mobile fitness app which encourages users to stay fit using a post-workout selfie feature (a bit like Strava X beReal)",
+        triggerX: gridCells(30),
         boxY: FLOOR_Y - 50,
         billboardOffset: { x: -110, y: -80 },
         imageKey: "bbProjects",
@@ -26,8 +26,8 @@ export const PORTFOLIO_SECTIONS = [
     {
         id: "hobbies",
         title: "HOBBIES",
-        content: "I love climbing and playing the guitar. Hvan't been climbing much lately but I really want to get back into it!",
-        triggerX: gridCells(50), // where the box is in the world
+        content: "I love climbing and playing the guitar. Havn't been climbing much lately but I really want to get back into it!",
+        triggerX: gridCells(50),
         boxY: FLOOR_Y - 50,
         billboardOffset: { x: -110, y: -80 },
         imageKey: "bbHobbies",
