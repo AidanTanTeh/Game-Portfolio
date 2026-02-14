@@ -28,6 +28,20 @@ export class Hero extends GameObject {
         this.isGrounded = true;
 
         this.drawLayer = 11;
+        this.normalDrawLayer = this.drawLayer;
+
+        this.wasGrounded = this.isGrounded;
+        this.justLanded = false;
+
+        this.inPipe = false;
+        this.pipeTime = 0;
+        this.pipeDuration = 800;
+        this.pipeTargetX = 0;
+
+        this.pipeSnapTime = 0;
+        this.pipeSnapDuration = 120;
+        this.pipeStartY = 0;
+        this.pipeEndY = 0;
 
         this.body = new Sprite({
             resource: resources.images.hero,
@@ -71,6 +85,37 @@ export class Hero extends GameObject {
     }
 
     step(delta, root) {
+        if (this.inPipe) {
+            // Snap position
+            if (this.pipeSnapTime > 0) {
+                this.pipeSnapTime -= delta;
+                const t = 1 - Math.max(0, this.pipeSnapTime) / this.pipeSnapDuration; // 0..1
+                const ease = 1 - Math.pow(1 - t, 3);
+
+                this.position.y = this.pipeStartY;
+
+                // Ease X into pipe center
+                const fromX = this.position.x;
+                const toX = this.pipeTargetX;
+                this.position.x = fromX + (toX - fromX) * ease;
+
+                this.tryEmitPosition();
+                return;
+            }
+
+            // Sink animation
+            this.position.x = this.pipeTargetX;
+
+            this.pipeTime -= delta;
+            const t = 1 - Math.max(0, this.pipeTime) / this.pipeDuration;
+            const easeIn = t * t;
+
+            this.position.y = this.pipeStartY + (this.pipeEndY - this.pipeStartY) * easeIn;
+
+            this.tryEmitPosition();
+            return;
+        }   
+
         if (this.itemPickupTime > 0) {
             this.workOnItemPickup(delta);
             return;
@@ -115,6 +160,8 @@ export class Hero extends GameObject {
         // World bounds
         nextX = Math.max(WORLD_MIN_X, Math.min(WORLD_MAX_X, nextX));
 
+        const prevGrounded = this.isGrounded;
+
         if (nextY >= FLOOR_Y) {
             nextY = FLOOR_Y;
             this.velocityY = 0;
@@ -122,6 +169,9 @@ export class Hero extends GameObject {
         } else {
             this.isGrounded = false;
         }
+
+        this.justLanded = (!prevGrounded && this.isGrounded);
+        this.wasGrounded = this.isGrounded;
 
         // Check if can move
         const canMove = isSpaceFree(walls, nextX, nextY);
@@ -318,5 +368,30 @@ export class Hero extends GameObject {
 
         // Start cooldown
         this.shootCooldownMs = this.fireRateMs;
+    }
+
+    enterPipe(centerX, feetY) {
+        if (this.inPipe) return;
+
+        this.inPipe = true;
+
+        this.drawLayer = -5;
+
+        this.pipeTargetX = centerX;
+        this.pipeSnapTime = this.pipeSnapDuration;
+
+        // Stop physics motion
+        this.velocityY = 0;
+        this.isGrounded = true;
+
+        this.pipeStartY = feetY;       
+        this.pipeEndY = feetY + 80;    
+
+        // Snap feet to the entrance position
+        this.position.x = centerX;
+        this.position.y = feetY;
+
+        // Sink duration timer
+        this.pipeTime = this.pipeDuration;
     }
 }

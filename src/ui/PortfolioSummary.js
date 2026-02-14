@@ -65,7 +65,7 @@ export class PortfolioSummary {
 
         form.addEventListener("submit", (e) => {
             e.preventDefault();
-            alert("Havn't actually implemented this yet lol (Coming soon!)");
+            alert("Doesn't actually work, havn't implemented this yet lol (Coming soon!)");
             form.reset();
         });
     }

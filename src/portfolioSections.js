@@ -15,7 +15,7 @@ export const PORTFOLIO_SECTIONS = [
     {
         id: "about",
         title: "ABOUT ME",
-        content: "I'm currently in my second year as a Computer Science student in UNSW! I'm working towards being the best worker McDonald's has ever seen once I graduate, so pls wish me luck!",
+        content: "I'm currently in my second year as a Computer Science student in UNSW! I strive to be the best worker McDonald's has ever seen once I graduate, so pls wish me luck!",
         triggerX: gridCells(43),
         boxY: FLOOR_Y - 50,
         billboardOffset: { x: -110, y: -80 },

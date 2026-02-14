@@ -28,6 +28,8 @@ import { StartScreenUI } from './src/ui/StartScreenUI';
 import { PauseManager } from './src/game/PauseManager';
 import { SignModal } from './src/ui/SignModal';
 import { PortfolioSummary } from './src/ui/PortfolioSummary';
+import { PipeModal } from './src/ui/PipeModal';
+import { Pipe } from './src/objects/Pipe/Pipe';
 
 // Grabbing the canvas to draw to
 const canvas = document.querySelector("#game-canvas");
@@ -63,6 +65,10 @@ const pauseManager = new PauseManager({
 const signModal = new SignModal({
     pauseManager
 });
+
+// Add pipe modal
+const pipeModal = new PipeModal({ pauseManager });
+
 
 // Add start screen
 const startUI = new StartScreenUI();
@@ -112,6 +118,7 @@ mainScene.addChild(ground);
 // Add player
 const hero = new Hero(WORLD_MIN_X, FLOOR_Y - 200);
 mainScene.addChild(hero);
+mainScene.hero = hero;
 
 // Add gun
 const gun = new Gun(gridCells(6), FLOOR_Y);
@@ -120,6 +127,10 @@ mainScene.addChild(gun);
 // Add sign
 const sign = new Sign(gridCells(3), FLOOR_Y);
 mainScene.addChild(sign);
+
+// Add pipe
+const pipe = new Pipe(WORLD_MAX_X - gridCells(4), FLOOR_Y);
+mainScene.addChild(pipe);
 
 // Add bullets
 events.on("SPAWN_BULLET", mainScene, ({ position, velocity }) => {
@@ -168,6 +179,12 @@ events.on("BOX_EXPLODE", mainScene, ({ x, y, sectionId }) => {
 events.on("SHOW_TUTORIAL", mainScene, () => {
     signModal.show();
 });
+
+// Pipe found
+events.on("PIPE_FOUND", mainScene, () => {
+    pipeModal.show();
+});
+
 
 // Establish update and draw loops
 const update = (delta) => {

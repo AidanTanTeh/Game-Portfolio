@@ -27,7 +27,7 @@ export class StartScreenUI {
 
         this.tips = [
             "Aidan's Tip: Use desktop to play interactive browser portfolio game, so cool! Wow!",
-            "Aidan's Tip: Might not be mobile compatible yet lol sorry",
+            "Aidan's Tip: Might not be mobile compatible yet sorry",
             "Aidan's Tip: Use desktop for full immersive experience, very wow!!"
         ];
 
