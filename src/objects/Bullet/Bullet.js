@@ -12,8 +12,8 @@ export class Bullet extends GameObject {
         this.lifeMs = lifeMs;
 
         // Small rectangle for bullets
-        this.w = 2;
-        this.h = 2;
+        this.w = 3;
+        this.h = 1;
 
         this.drawLayer = 11;
     }
@@ -77,7 +77,7 @@ export class Bullet extends GameObject {
     }
 
     drawImage(ctx, x, y) {
-        ctx.fillStyle = "grey";
+        ctx.fillStyle = "white";
         ctx.fillRect(x, y, this.w, this.h);
     }
 }
