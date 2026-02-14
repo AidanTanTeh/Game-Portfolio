@@ -234,7 +234,7 @@ const draw = () => {
     ctx.restore();
 
     // Draw mouse reticle
-     if (!pauseManager.isPaused) drawReticle(ctx, mouse);
+     if (!pauseManager.isPaused && hero.hasGun) drawReticle(ctx, mouse);
 }
 
 // Start the game!

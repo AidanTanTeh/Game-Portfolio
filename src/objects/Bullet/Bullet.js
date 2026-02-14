@@ -12,8 +12,8 @@ export class Bullet extends GameObject {
         this.lifeMs = lifeMs;
 
         // Small rectangle for bullets
-        this.w = 3;
-        this.h = 1;
+        this.w = 2;
+        this.h = 2;
 
         this.drawLayer = 11;
     }
