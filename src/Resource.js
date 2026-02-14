@@ -1,20 +1,22 @@
 class Resources {
     constructor() {
         // Everything we plan to download
-        this.toLoad = {
-            hero: "/sprites/hero-sheet.png",
-            ground: "/sprites/ground4.png",
-            sky: "/sprites/sky.png",
-            gunPickup: "/sprites/gunGreyPickup.png",
-            gunHeld: "/sprites/gunGreyHeld.png",
-            boxSheet: "/sprites/boxsheet2.png",
+        const BASE = import.meta.env.BASE_URL; // -> "/Game-Portfolio/" on Pages
 
-            bbIntro: "/sprites/me.png",
-            bbAbout: "/sprites/mcd.png",
-            bbProjects: "/sprites/snapfit.png",
-            bbHobbies: "/sprites/climbing.png",
-            bbGames: "/sprites/gamerSeal.png",
-        }
+        this.toLoad = {
+            hero: `${BASE}sprites/hero-sheet.png`,
+            ground: `${BASE}sprites/ground4.png`,
+            sky: `${BASE}sprites/sky.png`,
+            gunPickup: `${BASE}sprites/gunGreyPickup.png`,
+            gunHeld: `${BASE}sprites/gunGreyHeld.png`,
+            boxSheet: `${BASE}sprites/boxsheet2.png`,
+
+            bbIntro: `${BASE}sprites/me.png`,
+            bbAbout: `${BASE}sprites/mcd.png`,
+            bbProjects: `${BASE}sprites/snapfit.png`,
+            bbHobbies: `${BASE}sprites/climbing.png`,
+            bbGames: `${BASE}sprites/gamerSeal.png`,
+        };
 
         // Bucket to keep all images
         this.images = {};
