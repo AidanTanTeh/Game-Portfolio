@@ -35,13 +35,26 @@ export class PortfolioSummary {
         if (projects && this.projectsGrid) {
             this.projectsGrid.innerHTML = "";
 
-            const card = document.createElement("article");
-            card.className = "pixel-box";
-            card.innerHTML = `
-                <h3 class="pixel-h3">${projects.title}</h3>
-                <p class="pixel-text">${projects.content}</p>
-            `;
-            this.projectsGrid.appendChild(card);
+            const projectCards = [
+                {
+                    title: "FitSnap (Mobile Fitness App)",
+                    content: "A mobile fitness app which encourages users to stay fit using a post-workout selfie feature (a bit like Strava X beReal)",
+                },
+                {
+                    title: "UNSW CS Dashboard",
+                    content: "A dashboard that centralizes course deadlines, tasks, and resources across UNSW CS courses, with an AI study assistant that generates a personalized study schedule based on user data.",
+                },
+            ];
+
+            for (const p of projectCards) {
+                const card = document.createElement("article");
+                card.className = "pixel-box card-blue";
+                card.innerHTML = `
+                    <h3 class="pixel-h3">${p.title}</h3>
+                    <p class="pixel-text">${p.content}</p>
+                `;
+                this.projectsGrid.appendChild(card);
+            }
         }
 
         // GAMES

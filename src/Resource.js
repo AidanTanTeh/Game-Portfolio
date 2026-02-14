@@ -12,7 +12,7 @@ class Resources {
             boxSheet: `${BASE}sprites/boxsheet2.png`,
 
             bbIntro: `${BASE}sprites/me.png`,
-            bbAbout: `${BASE}sprites/mcd.png`,
+            bbAbout: `${BASE}sprites/mSign.png`,
             bbProjects: `${BASE}sprites/snapfit.png`,
             bbHobbies: `${BASE}sprites/climbing.png`,
             bbGames: `${BASE}sprites/gamerSeal.png`,
