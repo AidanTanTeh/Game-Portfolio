@@ -1,6 +1,6 @@
 import './style.css'
 import { Vector2 } from './src/Vector2';
-import { GameLoop } from './src/Gameloop';
+import { GameLoop } from "./src/GameLoop";;
 import { Input } from './src/Input';
 import { gridCells } from './src/helpers/grid';
 import { GameObject } from './src/GameObject';
@@ -19,7 +19,7 @@ import { Explosion } from './src/objects/Effects/Explosion';
 import { Billboard } from './src/objects/Billboard/Billboard';
 import { PORTFOLIO_SECTIONS } from './src/portfolioSections';
 import { getSectionById } from './src/helpers/billboardSections';
-import { Sky } from './src/objects/Sky/sky';
+import { Sky } from "./src/objects/Sky/Sky";
 import { SunMoon } from './src/objects/SunMoon/SunMoon';
 import { WORLD_MAX_X, WORLD_MIN_X } from './src/world/worldConstants';
 import { Buildings } from './src/objects/Buildings/Buildings';
