@@ -2,18 +2,18 @@ class Resources {
     constructor() {
         // Everything we plan to download
         this.toLoad = {
-            hero: "./sprites/hero-sheet.png",
-            ground: "./sprites/ground4.png",
-            sky: "./sprites/sky.png",
-            gunPickup: "./sprites/gunGreyPickup.png",
-            gunHeld: "./sprites/gunGreyHeld.png",
-            boxSheet: "./sprites/boxsheet2.png",
+            hero: "/sprites/hero-sheet.png",
+            ground: "/sprites/ground4.png",
+            sky: "/sprites/sky.png",
+            gunPickup: "/sprites/gunGreyPickup.png",
+            gunHeld: "/sprites/gunGreyHeld.png",
+            boxSheet: "/sprites/boxsheet2.png",
 
-            bbIntro: "./sprites/me.png",
-            bbAbout: "./sprites/mcd.png",
-            bbProjects: "./sprites/snapfit.png",
-            bbHobbies: "./sprites/climbing.png",
-            bbGames: "./sprites/gamerSeal.png",
+            bbIntro: "/sprites/me.png",
+            bbAbout: "/sprites/mcd.png",
+            bbProjects: "/sprites/snapfit.png",
+            bbHobbies: "/sprites/climbing.png",
+            bbGames: "/sprites/gamerSeal.png",
         }
 
         // Bucket to keep all images
